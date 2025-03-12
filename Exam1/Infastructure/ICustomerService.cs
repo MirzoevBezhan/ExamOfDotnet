@@ -1,5 +1,9 @@
+using Domain;
+
 namespace Infastructure;
 
-public class ICustomerService
+public interface ICustomerService
 {
+    public void GetCustomersRegisteredBetween(DateTime startDate,DateTime endDate);
+
 }
