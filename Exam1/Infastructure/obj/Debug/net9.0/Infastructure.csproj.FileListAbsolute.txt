@@ -1,0 +1,16 @@
+D:\Dotnet\Exams\Exam1\Infastructure\bin\Debug\net9.0\Infastructure.deps.json
+D:\Dotnet\Exams\Exam1\Infastructure\bin\Debug\net9.0\Infastructure.dll
+D:\Dotnet\Exams\Exam1\Infastructure\bin\Debug\net9.0\Infastructure.pdb
+D:\Dotnet\Exams\Exam1\Infastructure\bin\Debug\net9.0\Domain.dll
+D:\Dotnet\Exams\Exam1\Infastructure\bin\Debug\net9.0\Domain.pdb
+D:\Dotnet\Exams\Exam1\Infastructure\obj\Debug\net9.0\Infastructure.csproj.AssemblyReference.cache
+D:\Dotnet\Exams\Exam1\Infastructure\obj\Debug\net9.0\Infastructure.GeneratedMSBuildEditorConfig.editorconfig
+D:\Dotnet\Exams\Exam1\Infastructure\obj\Debug\net9.0\Infastructure.AssemblyInfoInputs.cache
+D:\Dotnet\Exams\Exam1\Infastructure\obj\Debug\net9.0\Infastructure.AssemblyInfo.cs
+D:\Dotnet\Exams\Exam1\Infastructure\obj\Debug\net9.0\Infastructure.csproj.CoreCompileInputs.cache
+D:\Dotnet\Exams\Exam1\Infastructure\obj\Debug\net9.0\Infastructure.sourcelink.json
+D:\Dotnet\Exams\Exam1\Infastructure\obj\Debug\net9.0\Infastru.CD45A3C5.Up2Date
+D:\Dotnet\Exams\Exam1\Infastructure\obj\Debug\net9.0\Infastructure.dll
+D:\Dotnet\Exams\Exam1\Infastructure\obj\Debug\net9.0\refint\Infastructure.dll
+D:\Dotnet\Exams\Exam1\Infastructure\obj\Debug\net9.0\Infastructure.pdb
+D:\Dotnet\Exams\Exam1\Infastructure\obj\Debug\net9.0\ref\Infastructure.dll

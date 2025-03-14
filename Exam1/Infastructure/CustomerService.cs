@@ -34,10 +34,8 @@ public class CustomerService : ICustomerService
                 System.Console.WriteLine($"{row}\t");
             }
         }
-     }
-
-        
-
+     }        
 }
 }
+
 }

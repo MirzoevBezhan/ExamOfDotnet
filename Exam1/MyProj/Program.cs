@@ -1,5 +1,10 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
-System.Console.WriteLine();
-System.Console.WriteLine();
-System.Console.WriteLine();
+﻿using Domain;
+using Infastructure;
+
+ProductService productService = new ProductService();
+foreach (var item in productService.GetUniqueProducts())
+{
+ System.Console.WriteLine(item.name);    
+ System.Console.WriteLine(item.category);    
+ System.Console.WriteLine(item.price);    
+}

@@ -57,7 +57,115 @@ public class OrderService : IOrderService
                 }
             }
         }
-                return res;
+        return res;
     }
+    public List<Orders> GetOrdersAboveAverageTotalPrice()
+    {
+        var res = new List<Orders>();
+        using (var connection = new NpgsqlConnection(connectionString))
+        {
+            connection.Open();
+            var cmd = "select * from orders where total_cost > (select avg(total_cost) from orders)";
+            var command = new NpgsqlCommand(cmd, connection);
+            using (var reader = command.ExecuteReader())
+            {
+                var order = new Orders();
+                while (reader.Read())
+                {
+                    order.order_id = reader.GetInt32(0);
+                    order.customer_id = reader.GetInt32(1);
+                    order.product_id = reader.GetInt32(2);
+                    order.order_date = reader.GetDateTime(3);
+                    order.quantity = reader.GetInt32(4);
+                    order.total_price = reader.GetDecimal(5);
+                    order.status = reader.GetString(6);
+                    res.Add(order);
+                }
+            }
+        }
+        return res;
+    }
+
+    public List<Orders> GetOrdersByCustomer(int customerId)
+    {
+        var res = new List<Orders>();
+        using (var connection = new NpgsqlConnection(connectionString))
+        {
+            connection.Open();
+            var cmd = "SELECT o.order_id, o.total_cost, c.customer_name FROM orders as o join customers as c ON o.customer_id = c.customer_id where c.customer_name = @customerName";
+            var command = new NpgsqlCommand(cmd, connection);
+            using (var reader = command.ExecuteReader())
+            {
+                var order = new Orders();
+                while (reader.Read())
+                {
+                    order.order_id = reader.GetInt32(0);
+                    order.customer_id = reader.GetInt32(1);
+                    order.product_id = reader.GetInt32(2);
+                    order.order_date = reader.GetDateTime(3);
+                    order.quantity = reader.GetInt32(4);
+                    order.total_price = reader.GetDecimal(5);
+                    order.status = reader.GetString(6);
+                    res.Add(order);
+                }
+            }
+        }
+        return res;
+    }
+
+    public List<Orders> GetNewOrdersSortedByDate()
+    {
+        var res = new List<Orders>();
+        using (var connection = new NpgsqlConnection(connectionString))
+        {
+            connection.Open();
+            var cmd = "select * from orders where status = 'новый' order by order_date";
+            var command = new NpgsqlCommand(cmd, connection);
+            using (var reader = command.ExecuteReader())
+            {
+                var order = new Orders();
+                while (reader.Read())
+                {
+                    order.order_id = reader.GetInt32(0);
+                    order.customer_id = reader.GetInt32(1);
+                    order.product_id = reader.GetInt32(2);
+                    order.order_date = reader.GetDateTime(3);
+                    order.quantity = reader.GetInt32(4);
+                    order.total_price = reader.GetDecimal(5);
+                    order.status = reader.GetString(6);
+                    res.Add(order);
+                }
+            }
+        }
+        return res;
+    }
+    public List<Orders> GetTotalOrderValueByCustomer()
+    {
+        var res = new List<Orders>();
+        using (var connection = new NpgsqlConnection(connectionString))
+        {
+            connection.Open();
+            var cmd = "select c.customer_id, c.customer_name, sum(o.total_cost) as hamagish from customers c join orders o on c.customer_id = o.customer_id group by c.customer_id, c.customer_name order by total_order_cost desc";
+            var command = new NpgsqlCommand(cmd, connection);
+            using (var reader = command.ExecuteReader())
+            {
+                var order = new Orders();
+                while (reader.Read())
+                {
+                    order.order_id = reader.GetInt32(0);
+                    order.customer_id = reader.GetInt32(1);
+                    order.product_id = reader.GetInt32(2);
+                    order.order_date = reader.GetDateTime(3);
+                    order.quantity = reader.GetInt32(4);
+                    order.total_price = reader.GetDecimal(5);
+                    order.status = reader.GetString(6);
+                    res.Add(order);
+                }
+            }
+        }
+        return res;
+    }
+
+
 }
 

@@ -36,13 +36,12 @@ public class ProductService : IPoductService
         return products;
     }
     public List<Product> GetUniqueProducts()
-    {
-
+    {   
         List<Product> products = new List<Product>();
         using (var connection = new NpgsqlConnection(connectionString))
         {
             connection.Open();
-            var cmd = $"select Distinct manufacter from products";
+            var cmd = $"select distinct manufacturer from products";
             var command = new NpgsqlCommand(cmd, connection);
             using (var reader = command.ExecuteReader())
             {
