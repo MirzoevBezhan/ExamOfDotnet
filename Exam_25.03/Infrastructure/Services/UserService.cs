@@ -77,7 +77,4 @@ public class UserService : IUserService
         var res = await connection.ExecuteAsync(cmd);
         return new Response<int>(res);
     }
-    
-
-
 }
