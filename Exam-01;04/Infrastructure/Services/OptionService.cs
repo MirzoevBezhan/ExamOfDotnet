@@ -17,7 +17,6 @@ public class OptionService(DataContext Context) : IOptionService
         return res == 0 ? new Responce<string>(HttpStatusCode.BadRequest, "Maybe something went wrong") :
         new Responce<string>("Option Added");
     }
-
     public async Task<Responce<string>> DeleteOption(int id)
     {
         using var connection = await Context.GetConnection();
@@ -26,7 +25,6 @@ public class OptionService(DataContext Context) : IOptionService
         return res == 0 ? new Responce<string>(HttpStatusCode.BadRequest, "Not found") :
         new Responce<string>("Option Deleted");
     }
-
     public async Task<Responce<List<Options>>> GetAll()
     {
         using var connection = await Context.GetConnection();
@@ -34,7 +32,6 @@ public class OptionService(DataContext Context) : IOptionService
         var res = await connection.QueryAsync<Options>(cmd);
         return new Responce<List<Options>>(res.ToList());
     }
-
     public async Task<Responce<Options>> GetOptions(int id)
     {
         using var connection = await Context.GetConnection();
@@ -72,8 +69,8 @@ public class OptionService(DataContext Context) : IOptionService
             {
                 id = line[0],
                 questionId = line[1],
-                optionText = line[2],
-                isCorrect = line[3],
+                // optionText = line[2],
+                // isCorrect = line[3],
                 optionLetter = line[4],
             };
             var result = await connection.ExecuteAsync(cmd, option);
@@ -107,5 +104,10 @@ public class OptionService(DataContext Context) : IOptionService
         await File.WriteAllLinesAsync(way, list);
         return new Responce<string>("All is okay");
     }
+    public async Task<Responce<string>> Analyze()
+    {
+        string path = "D:\\Dotnet\\Exams\\Exam-01;04";
+        var CountAllQuestions = "select count(*) from questions";
 
+    }
 }

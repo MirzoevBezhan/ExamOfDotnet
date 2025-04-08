@@ -1,4 +1,6 @@
 using Infrastructure.Data;
+using Infrastructure.Interface;
+using Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +10,8 @@ builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 
 builder.Services.AddScoped<DataContext>();
+builder.Services.AddScoped<IOptionService, OptionService>();
+builder.Services.AddScoped<IQuestionService, QuestionService>();
 
 
 var app = builder.Build();
