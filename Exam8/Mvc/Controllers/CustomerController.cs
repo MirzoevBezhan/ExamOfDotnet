@@ -3,6 +3,7 @@ using AutoMapper;
 using Domain.Dtos.Customer;
 using Domain.Entitites;
 using Domain.Filters;
+using Domain.Responces;
 using Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Mvc.Models;
@@ -30,7 +31,9 @@ public class CustomerController(ICustomerService service, IMapper mapper) : Cont
     {
         if (!ModelState.IsValid) return View(dto);
 
-        var mapped = mapper.Map<Customer>(dto);
+        var customer = mapper.Map<Customer>(dto);
+        var response = new Response<Customer>(customer);
+
         var result = await service.Create(dto);
         if (result.Code != System.Net.HttpStatusCode.OK)
         {
