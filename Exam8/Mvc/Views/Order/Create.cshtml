@@ -1,0 +1,26 @@
+@using Domain.Dtos.Order
+@model CreateOrderDto
+
+@{
+    ViewData["Title"] = "Create Order";
+}
+
+<div class="container mt-5">
+    <h2>Create Order</h2>
+
+    <form asp-action="Create" method="post">
+        <div class="mb-3">
+            <label asp-for="CustomerId" class="form-label"></label>
+            <input asp-for="CustomerId" class="form-control" />
+            <span asp-validation-for="CustomerId" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="OrderDate" class="form-label"></label>
+            <input asp-for="OrderDate" class="form-control" type="date" />
+            <span asp-validation-for="OrderDate" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-success">Create</button>
+    </form>
+</div>

@@ -1,0 +1,20 @@
+@using Domain.Dtos.OrderItem
+@model GetOrderItemDto
+
+@{
+    ViewData["Title"] = "Delete Order Item";
+}
+
+<div class="container mt-5">
+    <h2>Delete Order Item</h2>
+
+    <div class="alert alert-danger">
+        Are you sure you want to delete order item with ID <strong>@Model.Id</strong>?
+    </div>
+
+    <form asp-action="DeleteConfirmed" method="post">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">Yes, Delete</button>
+        <a href="/OrderItem/Index" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>

@@ -1,0 +1,19 @@
+@model Domain.Dtos.Product.GetProductDto
+
+@{
+    ViewData["Title"] = "Delete Product";
+}
+
+<div class="container mt-5">
+    <h2>Delete Product</h2>
+
+    <div class="alert alert-danger">
+        Are you sure you want to delete the product <strong>@Model.Name</strong>?
+    </div>
+
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">Yes, Delete</button>
+        <a href="/Product/Index" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
