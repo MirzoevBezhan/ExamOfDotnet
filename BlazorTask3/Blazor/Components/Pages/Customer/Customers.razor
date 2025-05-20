@@ -1,0 +1,51 @@
+@page "/customers"
+@using Domain.Entities
+@using Infrastructure.Data
+@using Infrastructure.Interfases
+@using Microsoft.EntityFrameworkCore
+@inject DataContext DbContext
+@inject ICustomerService service
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+
+<h3>Список клиентов</h3>
+
+<div class="mb-3">
+    <input type="text" @bind="SearchTerm" @bind:event="oninput" placeholder="Поиск по имени..." class="form-control" />
+</div>
+
+<div class="row">
+    @foreach (var customer in FilteredCustomers)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">@customer.FullName</h5>
+                    <p class="card-text">
+                        <strong>ID:</strong> @customer.Id<br />
+                        <strong>Телефон:</strong> @customer.Phone
+                    </p>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<a href="/customers/create" class="btn btn-success mt-3">Создать нового клиента</a>
+
+@code {
+    private List<Customer> customers = new();
+    private string SearchTerm = "";
+
+    private List<Customer> FilteredCustomers =>
+        string.IsNullOrWhiteSpace(SearchTerm)
+            ? customers
+            : customers.Where(c => c.FullName.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
+
+    protected override async Task OnInitializedAsync()
+    {
+        customers = await DbContext.Customers
+            .Include(c => c.Reservations)
+            .ToListAsync();
+    }
+}

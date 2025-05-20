@@ -1,0 +1,38 @@
+@page "/tables"
+@using Domain.Entities
+@using Infrastructure.Data
+@using Microsoft.EntityFrameworkCore
+@inject DataContext DbContext
+@rendermode InteractiveServer
+
+<div class="row">
+    @foreach (var table in tables)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Table number: @table.Number</h5>
+                    <p class="card-text">
+                        <strong>ID:</strong> @table.Id<br />
+                        <strong>Seats:</strong> @table.Seats<br />
+                        <strong>Reservation count:</strong> @table.Reservations.Count
+                    </p>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<a href="/tables/create" class="btn btn-success mt-3">Create Table</a>
+
+@code {
+    private List<Table> tables = new();
+    private string? errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+            tables = await DbContext.Tables
+                .Include(t => t.Reservations)
+                .ToListAsync();
+    }
+}

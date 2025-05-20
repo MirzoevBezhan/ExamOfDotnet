@@ -1,0 +1,293 @@
+@page "/space-shooter"
+@implements IDisposable
+@rendermode InteractiveServer
+
+<div class="game-container" @ref="gameContainer" tabindex="0" @onkeydown="HandleKeyDown" @onkeyup="HandleKeyUp">
+    <div class="player-ship" style="left: @playerX px; bottom: @playerY px;"></div>
+    
+    @foreach (var enemy in enemies)
+    {
+        <div class="enemy-ship" style="left: @enemy.X px; top: @enemy.Y px;"></div>
+    }
+    
+    @foreach (var bullet in bullets)
+    {
+        <div class="bullet" style="left: @bullet.X px; top: @bullet.Y px;"></div>
+    }
+    
+    @foreach (var explosion in explosions)
+    {
+        <div class="explosion" style="left: @explosion.X px; top: @explosion.Y px; 
+             width: @(explosion.Size)px; height: @(explosion.Size)px;"></div>
+    }
+    
+    <div class="game-stats">
+        <div>Очки: @score</div>
+        <div>Жизни: @lives</div>
+        <div>Уровень: @level</div>
+    </div>
+    
+    @if (!gameStarted)
+    {
+        <div class="start-screen">
+            <h2>КОСМИЧЕСКИЙ ШУТЕР</h2>
+            <button class="start-button" @onclick="StartGame">СТАРТ</button>
+        </div>
+    }
+    
+    @if (gameOver)
+    {
+        <div class="game-over-screen">
+            <h2>ИГРА ОКОНЧЕНА</h2>
+            <div>Ваш счет: @score</div>
+            <button class="restart-button" @onclick="StartGame">ИГРАТЬ СНОВА</button>
+        </div>
+    }
+</div>
+
+@code {
+    // Game elements
+    private ElementReference gameContainer;
+    private double playerX = 250;
+    private double playerY = 50;
+    private List<Bullet> bullets = new();
+    private List<Enemy> enemies = new();
+    private List<Explosion> explosions = new();
+    
+    // Game state
+    private int score = 0;
+    private int lives = 3;
+    private int level = 1;
+    private bool gameStarted = false;
+    private bool gameOver = false;
+    
+    // Controls
+    private bool leftPressed = false;
+    private bool rightPressed = false;
+    private bool upPressed = false;
+    private bool downPressed = false;
+    private bool spacePressed = false;
+    
+    // Game settings
+    private const int PlayerSpeed = 5;
+    private const int BulletSpeed = 7;
+    private const int EnemySpeed = 2;
+    private const int PlayerWidth = 50;
+    private const int PlayerHeight = 50;
+    private const int EnemySize = 40;
+    private const int BulletSize = 10;
+    
+    // Timing
+    private DateTime lastFrameTime;
+    private DateTime lastEnemySpawnTime;
+    private DateTime lastBulletTime;
+    private System.Threading.Timer gameLoopTimer;
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await gameContainer.FocusAsync();
+        }
+    }
+    
+    private void StartGame()
+    {
+        // Reset game state
+        playerX = 250;
+        playerY = 50;
+        bullets.Clear();
+        enemies.Clear();
+        explosions.Clear();
+        score = 0;
+        lives = 3;
+        level = 1;
+        gameStarted = true;
+        gameOver = false;
+        
+        // Start game loop
+        lastFrameTime = DateTime.Now;
+        lastEnemySpawnTime = DateTime.Now;
+        gameLoopTimer = new System.Threading.Timer(GameLoop, null, 0, 16); // ~60 FPS
+    }
+    
+    private void GameLoop(object state)
+    {
+        if (!gameStarted || gameOver) return;
+        
+        var now = DateTime.Now;
+        var deltaTime = (now - lastFrameTime).TotalSeconds;
+        lastFrameTime = now;
+        
+        InvokeAsync(() =>
+        {
+            // Player movement
+            if (leftPressed) playerX = Math.Max(0, playerX - PlayerSpeed);
+            if (rightPressed) playerX = Math.Min(500 - PlayerWidth, playerX + PlayerSpeed);
+            if (upPressed) playerY = Math.Min(500 - PlayerHeight, playerY + PlayerSpeed);
+            if (downPressed) playerY = Math.Max(0, playerY - PlayerSpeed);
+            
+            // Shooting
+            if (spacePressed && (now - lastBulletTime).TotalMilliseconds > 300)
+            {
+                bullets.Add(new Bullet { X = playerX + PlayerWidth / 2 - BulletSize / 2, Y = 500 - PlayerHeight - BulletSize });
+                lastBulletTime = now;
+            }
+            
+            // Enemy spawning
+            if ((now - lastEnemySpawnTime).TotalSeconds > 2.0 / level)
+            {
+                enemies.Add(new Enemy { X = new Random().Next(0, 500 - EnemySize), Y = 0 });
+                lastEnemySpawnTime = now;
+            }
+            
+            // Move bullets
+            for (int i = bullets.Count - 1; i >= 0; i--)
+            {
+                bullets[i].Y -= BulletSpeed;
+                
+                // Remove bullets that are off screen
+                if (bullets[i].Y < 0)
+                {
+                    bullets.RemoveAt(i);
+                    continue;
+                }
+                
+                // Check bullet-enemy collisions
+                for (int j = enemies.Count - 1; j >= 0; j--)
+                {
+                    if (CheckCollision(bullets[i], enemies[j]))
+                    {
+                        explosions.Add(new Explosion { X = enemies[j].X, Y = enemies[j].Y, Size = EnemySize });
+                        enemies.RemoveAt(j);
+                        bullets.RemoveAt(i);
+                        score += 10 * level;
+                        
+                        // Level up every 100 points
+                        if (score >= level * 100)
+                        {
+                            level++;
+                        }
+                        
+                        break;
+                    }
+                }
+            }
+            
+            // Move enemies
+            for (int i = enemies.Count - 1; i >= 0; i--)
+            {
+                enemies[i].Y += EnemySpeed;
+                
+                // Remove enemies that are off screen
+                if (enemies[i].Y > 500)
+                {
+                    enemies.RemoveAt(i);
+                    lives--;
+                    
+                    if (lives <= 0)
+                    {
+                        GameOver();
+                    }
+                    continue;
+                }
+                
+                // Check player-enemy collisions
+                if (CheckPlayerCollision(enemies[i]))
+                {
+                    explosions.Add(new Explosion { X = enemies[i].X, Y = enemies[i].Y, Size = EnemySize });
+                    enemies.RemoveAt(i);
+                    lives--;
+                    
+                    if (lives <= 0)
+                    {
+                        GameOver();
+                    }
+                }
+            }
+            
+            // Update explosions
+            for (int i = explosions.Count - 1; i >= 0; i--)
+            {
+                explosions[i].Size -= 2;
+                if (explosions[i].Size <= 0)
+                {
+                    explosions.RemoveAt(i);
+                }
+            }
+            
+            StateHasChanged();
+        });
+    }
+    
+    private bool CheckCollision(Bullet bullet, Enemy enemy)
+    {
+        return bullet.X < enemy.X + EnemySize &&
+               bullet.X + BulletSize > enemy.X &&
+               bullet.Y < enemy.Y + EnemySize &&
+               bullet.Y + BulletSize > enemy.Y;
+    }
+    
+    private bool CheckPlayerCollision(Enemy enemy)
+    {
+        return playerX < enemy.X + EnemySize &&
+               playerX + PlayerWidth > enemy.X &&
+               (500 - playerY - PlayerHeight) < enemy.Y + EnemySize &&
+               (500 - playerY) > enemy.Y;
+    }
+    
+    private void GameOver()
+    {
+        gameOver = true;
+        gameStarted = false;
+        gameLoopTimer?.Dispose();
+    }
+    
+    private void HandleKeyDown(KeyboardEventArgs e)
+    {
+        switch (e.Key)
+        {
+            case "ArrowLeft": leftPressed = true; break;
+            case "ArrowRight": rightPressed = true; break;
+            case "ArrowUp": upPressed = true; break;
+            case "ArrowDown": downPressed = true; break;
+            case " ": spacePressed = true; break;
+        }
+    }
+    
+    private void HandleKeyUp(KeyboardEventArgs e)
+    {
+        switch (e.Key)
+        {
+            case "ArrowLeft": leftPressed = false; break;
+            case "ArrowRight": rightPressed = false; break;
+            case "ArrowUp": upPressed = false; break;
+            case "ArrowDown": downPressed = false; break;
+            case " ": spacePressed = false; break;
+        }
+    }
+    
+    public void Dispose()
+    {
+        gameLoopTimer?.Dispose();
+    }
+    
+    private class Bullet
+    {
+        public double X { get; set; }
+        public double Y { get; set; }
+    }
+    
+    private class Enemy
+    {
+        public double X { get; set; }
+        public double Y { get; set; }
+    }
+    
+    private class Explosion
+    {
+        public double X { get; set; }
+        public double Y { get; set; }
+        public int Size { get; set; } = 30;
+    }
+}

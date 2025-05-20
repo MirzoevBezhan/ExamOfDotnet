@@ -1,0 +1,74 @@
+@page "/number-guess-game"
+@rendermode  InteractiveServer
+<h3>Угадай число от 1 до 100</h3>
+
+@if (gameOver)
+{
+    <div class="alert alert-success">
+        <p>Поздравляем! Вы угадали число @targetNumber за @attempts попыток.</p>
+        <button class="btn btn-primary" @onclick="StartNewGame">Новая игра</button>
+    </div>
+}
+else
+{
+    <div class="form-group">
+        <label>Введите вашу догадку:</label>
+        <input type="number" class="form-control" @bind="userGuess" @bind:event="oninput" />
+        <button class="btn btn-primary mt-2" @onclick="CheckGuess" disabled="@(userGuess < 1 || userGuess > 100)">Проверить</button>
+    </div>
+
+    @if (message != null)
+    {
+        <div class="alert alert-info mt-3">@message</div>
+    }
+
+    <div class="mt-3">
+        <p>Попыток: @attempts</p>
+        <p>Предыдущие попытки: @string.Join(", ", previousGuesses)</p>
+    </div>
+}
+
+@code {
+    private int targetNumber;
+    private int userGuess;
+    private string message;
+    private int attempts;
+    private bool gameOver;
+    private List<int> previousGuesses = new List<int>();
+
+    protected override void OnInitialized()
+    {
+        StartNewGame();
+    }
+
+    private void StartNewGame()
+    {
+        var random = new Random();
+        targetNumber = random.Next(1, 101);
+        userGuess = 0;
+        message = null;
+        attempts = 0;
+        gameOver = false;
+        previousGuesses.Clear();
+    }
+
+    private void CheckGuess()
+    {
+        attempts++;
+        previousGuesses.Add(userGuess);
+
+        if (userGuess == targetNumber)
+        {
+            message = $"Правильно! Это число {targetNumber}.";
+            gameOver = true;
+        }
+        else if (userGuess < targetNumber)
+        {
+            message = "Загаданное число больше.";
+        }
+        else
+        {
+            message = "Загаданное число меньше.";
+        }
+    }
+}

@@ -1,0 +1,103 @@
+@page "/reservations/create"
+@using Domain.Entities
+@using Infrastructure.Data
+@using Microsoft.EntityFrameworkCore
+@inject DataContext DbContext
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+
+<div class="container mt-5">
+    <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0">Create reservation</h3>
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <label class="form-label">Choose Table</label>
+                <select class="form-select" @bind="newReservation.TableId">
+                    <option value="">Table</option>
+                    @foreach (var table in availableTables)
+                    {
+                        <option value="@table.Id">
+                            Table @table.Number (@table.Seats seats)
+                        </option>
+                    }
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Choose Customer</label>
+                <select class="form-select" @bind="newReservation.CustomerId">
+                    <option value="">Customer</option>
+                    @foreach (var customer in availableCustomers)
+                    {
+                        <option value="@customer.Id">@customer.FullName (@customer.Phone)</option>
+                    }
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">From </label>
+                <input type="datetime-local" class="form-control" @bind="newReservation.From"/>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">To</label>
+                <input type="datetime-local" class="form-control" @bind="newReservation.To"/>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <button class="btn btn-success w-100 me-2" @onclick="CreateReservation1">Create Reservation</button>
+                <button class="btn btn-outline-secondary w-100" @onclick="Cancel">Cancel</button>
+            </div>
+
+            @if (errorMessage != null)
+            {
+                <div class="alert alert-danger mt-3">@errorMessage</div>
+            }
+
+            <a href="/reservations" class="btn btn-secondary mt-3">Go back</a>
+        </div>
+    </div>
+</div>
+
+@code {
+    private Reservation newReservation = new();
+    private List<Table> availableTables = new();
+    private List<Customer> availableCustomers = new();
+    private string? errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        availableTables = await DbContext.Tables.ToListAsync();
+        availableCustomers = await DbContext.Customers.ToListAsync();
+    }
+
+    private async Task CreateReservation1()
+    {
+        var startDay = DateTime.Today;
+        var endDay = DateTime.Today.AddDays(1);
+
+        var isBusy = await DbContext.Reservations
+            .AnyAsync(r => r.TableId == newReservation.TableId &&
+                           (r.From <= newReservation.From && r.From <= newReservation.To || 
+                            r.From <= newReservation.From && r.From <= newReservation.To) && 
+                            r.From >= startDay && r.From < endDay);
+
+
+        if (isBusy)
+        {
+            errorMessage = "This table is already reserved.";
+            return;
+        }
+
+        DbContext.Reservations.Add(newReservation);
+        await DbContext.SaveChangesAsync();
+        NavigationManager.NavigateTo("/reservations");
+    }
+
+    private void Cancel()
+    {
+        NavigationManager.NavigateTo("/reservations");
+    }
+
+}

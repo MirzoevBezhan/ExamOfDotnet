@@ -1,0 +1,48 @@
+@page "/tables/create"
+@using Domain.Entities
+@using Infrastructure.Data
+@inject NavigationManager NavManager
+@inject DataContext DbContext
+@rendermode InteractiveServer
+
+<div class="container mt-5">
+    <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0">Create Table </h3>
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <label class="form-label">Table Number :</label>
+                <input @bind="@Table.Number" type="number" class="form-control"/>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Seats :</label>
+                <input @bind="@Table.Seats" type="number" class="form-control"/>
+            </div>
+
+            <button @onclick="@RegisterTable" class="btn btn-success w-100 mt-2">Create</button>
+            <a href="/tables" class="btn btn-secondary w-100 mt-2">Back</a>
+        </div>
+    </div>
+</div>
+
+@code {
+    private Table Table = new();
+
+    private  async Task RegisterTable()
+    {
+        var newTable = new Domain.Entities.Table
+        {
+            Number = Table.Number,
+            Seats = Table.Seats,
+            Reservations = new List<Reservation>()
+        };
+
+        await DbContext.Tables.AddAsync(newTable);
+        await DbContext.SaveChangesAsync();
+
+        NavManager.NavigateTo("/tables");
+    }
+
+}

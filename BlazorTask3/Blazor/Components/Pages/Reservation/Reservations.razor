@@ -1,0 +1,41 @@
+@page "/reservations"
+@using Domain.Entities
+@using Infrastructure.Data
+@using Microsoft.EntityFrameworkCore
+@inject DataContext DbContext
+@rendermode InteractiveServer
+
+<h3 class="mb-4">Reservations</h3>
+
+<div class="row">
+    @foreach (var reservation in reservations)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Reservation #@reservation.Id</h5>
+                    <p class="card-text">
+                        <strong>Customer:</strong> @reservation.Customer.FullName (@reservation.Customer.Phone)<br />
+                        <strong>Table:</strong> @reservation.Table.Number (@reservation.Table.Seats)<br />
+                        <strong>Reservation Date:</strong> @reservation.ReservationDate
+                    </p>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<a href="/reservations/create" class="btn btn-success mt-3">Create New</a>
+
+@code {
+    private List<Reservation> reservations = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+            reservations = await DbContext.Reservations
+                .Include(r => r.Customer)
+                .Include(r => r.Table)
+                .OrderBy(r => r.ReservationDate)
+                .ToListAsync();
+    }
+}
