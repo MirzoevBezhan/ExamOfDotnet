@@ -10851,3 +10851,33 @@ WHERE "Id" = @p16 AND "ConcurrencyStamp" = @p17;
 2025-05-20 17:59:39.125 +05:00 [DBG] Connection id "0HNCNIO0FIDTP" sending FIN because: "The Socket transport's send loop completed gracefully."
 2025-05-20 17:59:39.127 +05:00 [DBG] Connection id "0HNCNIO0FIDTQ" stopped.
 2025-05-20 17:59:39.144 +05:00 [DBG] Connection id "0HNCNIO0FIDTP" stopped.
+2025-05-20 18:00:31.182 +05:00 [DBG] Connection id "0HNCNIO0FIDTR" accepted.
+2025-05-20 18:00:31.250 +05:00 [DBG] Connection id "0HNCNIO0FIDTS" accepted.
+2025-05-20 18:00:31.251 +05:00 [DBG] Connection id "0HNCNIO0FIDTR" started.
+2025-05-20 18:00:31.312 +05:00 [DBG] Connection id "0HNCNIO0FIDTS" started.
+2025-05-20 18:00:31.313 +05:00 [INF] Request starting HTTP/1.1 GET http://localhost:5265/swagger/index.html - null null
+2025-05-20 18:00:31.345 +05:00 [DBG] Response markup is scheduled to include browser refresh script injection.
+2025-05-20 18:00:31.666 +05:00 [DBG] Response markup was updated to include browser refresh script injection.
+2025-05-20 18:00:31.697 +05:00 [DBG] Connection id "0HNCNIO0FIDTR" completed keep alive response.
+2025-05-20 18:00:31.700 +05:00 [INF] Request finished HTTP/1.1 GET http://localhost:5265/swagger/index.html - 200 null text/html;charset=utf-8 386.9573ms
+2025-05-20 18:00:34.193 +05:00 [DBG] Connection id "0HNCNIO0FIDTS" received FIN.
+2025-05-20 18:00:34.199 +05:00 [DBG] Connection id "0HNCNIO0FIDTR" received FIN.
+2025-05-20 18:00:34.700 +05:00 [DBG] Connection id "0HNCNIO0FIDTS" disconnecting.
+2025-05-20 18:00:34.720 +05:00 [DBG] Connection id "0HNCNIO0FIDTS" sending FIN because: "The Socket transport's send loop completed gracefully."
+2025-05-20 18:00:34.754 +05:00 [DBG] Connection id "0HNCNIO0FIDTR" sending FIN because: "The Socket transport's send loop completed gracefully."
+2025-05-20 18:00:35.425 +05:00 [DBG] Connection id "0HNCNIO0FIDTR" disconnecting.
+2025-05-20 18:00:35.426 +05:00 [DBG] Connection id "0HNCNIO0FIDTS" stopped.
+2025-05-20 18:00:35.431 +05:00 [DBG] Connection id "0HNCNIO0FIDTR" stopped.
+2025-05-20 18:00:36.567 +05:00 [DBG] Connection id "0HNCNIO0FIDTT" accepted.
+2025-05-20 18:00:36.568 +05:00 [DBG] Connection id "0HNCNIO0FIDTT" started.
+2025-05-20 18:00:36.569 +05:00 [INF] Request starting HTTP/1.1 GET http://localhost:5265/_framework/aspnetcore-browser-refresh.js - null null
+2025-05-20 18:00:36.576 +05:00 [DBG] Script injected: /_framework/aspnetcore-browser-refresh.js
+2025-05-20 18:00:36.580 +05:00 [DBG] Connection id "0HNCNIO0FIDTT" completed keep alive response.
+2025-05-20 18:00:36.581 +05:00 [INF] Request finished HTTP/1.1 GET http://localhost:5265/_framework/aspnetcore-browser-refresh.js - 200 16481 application/javascript; charset=utf-8 11.6616ms
+2025-05-20 18:00:36.765 +05:00 [INF] Request starting HTTP/1.1 GET http://localhost:5265/swagger/v1/swagger.json - null null
+2025-05-20 18:00:36.785 +05:00 [DBG] Connection id "0HNCNIO0FIDTT" completed keep alive response.
+2025-05-20 18:00:36.793 +05:00 [INF] Request finished HTTP/1.1 GET http://localhost:5265/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 27.3727ms
+2025-05-20 18:00:44.207 +05:00 [DBG] Connection id "0HNCNIO0FIDTT" received FIN.
+2025-05-20 18:00:44.208 +05:00 [DBG] Connection id "0HNCNIO0FIDTT" sending FIN because: "The Socket transport's send loop completed gracefully."
+2025-05-20 18:00:44.211 +05:00 [DBG] Connection id "0HNCNIO0FIDTT" disconnecting.
+2025-05-20 18:00:44.212 +05:00 [DBG] Connection id "0HNCNIO0FIDTT" stopped.
