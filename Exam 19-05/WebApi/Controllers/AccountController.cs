@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers;
 
-[ApiController]
+[ApiController]a
 [Route("api/[controller]")]
 public class AccountController(IAuthService authService) : ControllerBase
 {
